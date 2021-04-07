@@ -26,9 +26,18 @@ interface HomeProps {
 
 export default function Home({ postsPagination }: HomeProps): JSX.Element {
   return (
-    <>
-      <h1>hello</h1>
-    </>
+    <main className={styles.contentContainer}>
+      <h1>
+        <img src="logo.svg" alt="Space traveling logo." />
+      </h1>
+      <div className={styles.post}>
+        <h2>Como utilizar hooks</h2>
+        <span>Pensando em sincronização em vez de ciclos de vida.</span>
+        <time>15 Mar 2021</time>
+        <span>Joseph Oliveira</span>
+      </div>
+      <button type="button">Carregar mais posts</button>
+    </main>
   );
 }
 
