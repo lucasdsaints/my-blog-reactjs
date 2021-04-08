@@ -1,8 +1,9 @@
 import { GetStaticProps } from 'next';
+import { useState } from 'react';
+import { FiCalendar, FiUser } from 'react-icons/fi';
 
 import { getPrismicClient } from '../services/prismic';
 
-import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
 
 interface Post {
@@ -24,19 +25,50 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-export default function Home({ postsPagination }: HomeProps): JSX.Element {
+export default function Home({ postsPagination }: HomeProps) {
+  const [nextPageLink, setNextPageLink] = useState(postsPagination.next_page);
+  const [posts, setPosts] = useState(postsPagination.results);
+
+  async function handleLoadMore() {
+    try {
+      const result = await fetch(nextPageLink);
+      const data: PostPagination = await result.json();
+
+      setNextPageLink(data.next_page);
+      setPosts([...posts, ...data.results]);
+    } catch (e) {
+      // eslint-disable-next-line no-alert
+      alert('Erro ao buscar novos posts...');
+      // eslint-disable-next-line no-console
+      console.log(e.message);
+    }
+  }
+
   return (
     <main className={styles.contentContainer}>
       <h1>
         <img src="logo.svg" alt="Space traveling logo." />
       </h1>
-      <div className={styles.post}>
-        <h2>Como utilizar hooks</h2>
-        <span>Pensando em sincronização em vez de ciclos de vida.</span>
-        <time>15 Mar 2021</time>
-        <span>Joseph Oliveira</span>
-      </div>
-      <button type="button">Carregar mais posts</button>
+      <ul>
+        {posts.map(post => (
+          <li key={post.uid} className={styles.post}>
+            <h2>{post.data.title}</h2>
+            <span>{post.data.subtitle}</span>
+            <div className={styles.aditionalInfo}>
+              <FiCalendar fontSize="1.25rem" />
+              <time>15 Mar 2021</time>
+
+              <FiUser fontSize="1.25rem" />
+              <span>{post.data.author}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+      {nextPageLink && (
+        <button type="button" onClick={handleLoadMore}>
+          Carregar mais posts
+        </button>
+      )}
     </main>
   );
 }
