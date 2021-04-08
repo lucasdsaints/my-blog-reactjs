@@ -1,1 +1,18 @@
-// TODO
+.headerContainer {
+  display: flex;
+  align-items: center;
+  width: 800px;
+  height: 6.25rem;
+
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  img {
+    cursor: pointer;
+    transition: filter .2s;
+
+    &:hover {
+      filter: brightness(.8);
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import { GetStaticProps } from 'next';
 import { useState } from 'react';
 import { FiCalendar, FiUser } from 'react-icons/fi';
+import Link from 'next/link';
 
 import { getPrismicClient } from '../services/prismic';
 
@@ -51,17 +52,19 @@ export default function Home({ postsPagination }: HomeProps) {
       </h1>
       <ul>
         {posts.map(post => (
-          <li key={post.uid} className={styles.post}>
-            <h2>{post.data.title}</h2>
-            <span>{post.data.subtitle}</span>
-            <div className={styles.aditionalInfo}>
-              <FiCalendar fontSize="1.25rem" />
-              <time>15 Mar 2021</time>
+          <Link key={post.uid} href={`/post/${post.uid}`}>
+            <li className={styles.post}>
+              <h2>{post.data.title}</h2>
+              <span>{post.data.subtitle}</span>
+              <div className={styles.aditionalInfo}>
+                <FiCalendar fontSize="1.25rem" />
+                <time>15 Mar 2021</time>
 
-              <FiUser fontSize="1.25rem" />
-              <span>{post.data.author}</span>
-            </div>
-          </li>
+                <FiUser fontSize="1.25rem" />
+                <span>{post.data.author}</span>
+              </div>
+            </li>
+          </Link>
         ))}
       </ul>
       {nextPageLink && (
