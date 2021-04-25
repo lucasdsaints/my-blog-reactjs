@@ -10,22 +10,6 @@ import { formatDate } from '../../utils/format';
 
 import styles from './post.module.scss';
 
-interface PrismicPost {
-  first_publication_date: string | null;
-  data: {
-    author: string;
-    title: string;
-    subtitle: string;
-    banner: {
-      url: string;
-    };
-    group: {
-      heading: string;
-      body: any[];
-    }[];
-  };
-}
-
 interface Post {
   first_publication_date: string | null;
   data: {
@@ -35,12 +19,6 @@ interface Post {
     };
     author: string;
     group: {
-      heading: string;
-      body: {
-        text: string;
-      }[];
-    }[];
-    content: {
       heading: string;
       body: {
         text: string;
@@ -88,11 +66,11 @@ export default function Post({ post }: PostProps) {
               <span>{post.data.author}</span>
 
               <FiClock fontSize="1.25rem" />
-              <span>{calculateReadingTime(post.data.content)} min</span>
+              <span>{calculateReadingTime(post.data.group)} min</span>
             </div>
           </section>
 
-          {post.data.content.map(section => (
+          {post.data.group.map(section => (
             <section key={section.heading}>
               <h2>{section.heading}</h2>
               <div dangerouslySetInnerHTML={{ __html: RichText.asHtml(section.body) }} />
@@ -126,7 +104,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { slug } = params;
 
   const prismic = getPrismicClient();
-  const response: PrismicPost = await prismic.getByUID('posts', String(slug), {});
+  const response: Post = await prismic.getByUID('posts', String(slug), {});
 
   if (!response) {
     return {
@@ -134,40 +112,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     };
   }
 
-  // const otherPosts = results.filter(
-  //   (post, index) =>
-  //     index === currentPostPositionIndex + 1 ||
-  //     index === currentPostPositionIndex - 1
-  // );
-
-  // const navigationItems = {
-  //   nextPost: otherPosts[0] ?? null,
-  //   previousPost: otherPosts[1] ?? null,
-  // };
-
-  // const post: Post = {
-  //   ...response,
-  //   // first_publication_date: response.first_publication_date,
-  //   data: {
-  //     ...response.data,
-  //     // author: response.data?.author ?? '',
-  //     // title: response.data?.title ?? '',
-  //     // banner: {
-  //     //   url: response.data?.banner?.url ?? '',
-  //     // },
-  //     content:
-  //       response.data?.group?.map(group => ({
-  //         heading: group.heading,
-  //         body: group.body,
-  //       })) ?? [],
-  //   },
-  // };
-
   return {
-    // props: { post },
     props: {
       post: response,
-      // navigationItems,
     },
   };
 };
