@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { getPrismicClient } from '../services/prismic';
 
 import styles from './home.module.scss';
+import { formatDate } from '../utils/format';
 
 interface Post {
   uid?: string;
@@ -48,7 +49,7 @@ export default function Home({ postsPagination }: HomeProps) {
   return (
     <main className={styles.contentContainer}>
       <h1>
-        <img src="logo.svg" alt="Space traveling logo." />
+        <img src="logo.svg" alt="logo" />
       </h1>
       <ul>
         {posts.map(post => (
@@ -58,7 +59,7 @@ export default function Home({ postsPagination }: HomeProps) {
               <span>{post.data.subtitle}</span>
               <div className={styles.aditionalInfo}>
                 <FiCalendar fontSize="1.25rem" />
-                <time>15 Mar 2021</time>
+                <time>{formatDate(post.first_publication_date)}</time>
 
                 <FiUser fontSize="1.25rem" />
                 <span>{post.data.author}</span>
